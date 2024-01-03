@@ -4,7 +4,7 @@ const path = require("path");
 export default defineNuxtConfig({
   devtools: { enabled: false },
 
-  ssr: true,
+  ssr: false,
 
   nitro: {
     output: {
