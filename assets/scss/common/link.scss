@@ -1,0 +1,19 @@
+@import "@/assets/scss/vars";
+
+.link {
+  border: none;
+  outline: none;
+  color: $gray;
+  cursor: pointer;
+  display: block;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $primary;
+  }
+
+  &--active {
+    color: $primary;
+  }
+}

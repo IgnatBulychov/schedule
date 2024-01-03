@@ -1,0 +1,35 @@
+@import "@/assets/scss/vars";
+
+.btn {
+  border: none;
+  outline: none;
+  padding: 8px 32px;
+  border-radius: 10px;
+  color: #636363;
+  cursor: pointer;
+  display: block;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+@each $type, $background in (primary, $primary), (light-primary, $light-primary),
+  (success, $success), (danger, $danger), (transparent, transparent)
+{
+  #{".btn-" + $type} {
+    background: $background;
+    @if ($background != transparent) {
+      color: #fff;
+    }
+    &:hover {
+      background: lighten($background, 5);
+    }
+    &:disabled {
+      pointer-events: none;
+    }
+
+    &.active {
+      background: transparent;
+      color: #233b4c;
+    }
+  }
+}

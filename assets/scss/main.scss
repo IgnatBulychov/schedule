@@ -1,0 +1,9 @@
+@import url("~/assets/scss/vars.scss");
+@import url("~/assets/scss/fonts.scss");
+@import url("~/assets/scss/common/button.scss");
+@import url("~/assets/scss/common/link.scss");
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background: var(--main-bg);
+}
