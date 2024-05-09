@@ -44,7 +44,7 @@ const emits = defineEmits(["select"]);
     display: grid;
     grid-template-columns: repeat(7, 48px);
     width: fit-content;
-
+    align-content: center;
     &-name {
       grid-column-start: 1;
       grid-column-end: 8;
