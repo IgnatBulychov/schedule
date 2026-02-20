@@ -7,14 +7,32 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 1. Добавляем стандартные пути системных утилит
+      - name: Fix System Path
+        run: echo "/usr/bin:/bin:/usr/sbin:/sbin" >> $GITHUB_PATH
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
-          version: 8
-      - name: Install & Build
+          node-version: 20
+
+      # 2. Устанавливаем pnpm через системный npm
+      - name: Install pnpm
+        run: npm install -g pnpm@8
+
+      - name: Install dependencies
+        # Ограничиваем количество потоков pnpm
+        run: pnpm install --no-frozen-lockfile --ignore-scripts --network-concurrency 1
+
+      - name: Build
         run: |
-          pnpm install
-          pnpm run generate
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          npx nuxt generate
+        env:
+          NITRO_CONCURRENCY: 1
 
       - name: Deploy to Server
         uses: Burnett01/rsync-deployments@7.0.0
