@@ -1,0 +1,48 @@
+name: Deploy Production
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 1. Добавляем стандартные пути системных утилит
+      - name: Fix System Path
+        run: echo "/usr/bin:/bin:/usr/sbin:/sbin" >> $GITHUB_PATH
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 2. Устанавливаем pnpm через системный npm
+      - name: Install pnpm
+        run: npm install -g pnpm@8
+
+      # 3. Устанавливаем зависимости
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile --ignore-scripts --network-concurrency 1
+
+      # 4. Сборка проекта
+      - name: Build
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          npx nuxt generate
+        env:
+          NITRO_CONCURRENCY: 1
+
+      # 5. Деплой файлов на сервер через ssh rsync
+      - name: Deploy to Server
+        uses: Burnett01/rsync-deployments@7.0.0
+        with:
+          switches: -avzr --delete
+          path: ./dist/
+          remote_host: ${{ secrets.HOST_PROD }}
+          remote_port: ${{ secrets.PORT }}
+          remote_path: ${{ secrets.PATH }}
+          remote_user: ${{ secrets.USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
